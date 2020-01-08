@@ -1,10 +1,11 @@
 const { task } = require("gulp");
 const log = require("fancy-log");
+const esm = require("./plugins/escompile");
 
-function distTask(done) {
+function distTask() {
     log("Inside dist task");
     
-    done();
+    return esm();
 }
 
 distTask.displayName = "dist:all"

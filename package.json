@@ -22,7 +22,8 @@
   "homepage": "https://github.com/pramodaug17/eventJS#readme",
   "dependencies": {},
   "devDependencies": {
+    "fancy-log": "^1.3.3",
     "gulp": "^4.0.2",
-    "fancy-log": "^1.3.3"
+    "rollup": "^1.28.0"
   }
 }

@@ -8,7 +8,6 @@ var distTasks = require("./build/tasks/dist");
 
 function defaultTask(done) {
     log("Inside default task");
-
     done();
 }
 
