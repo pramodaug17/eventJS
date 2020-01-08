@@ -28,26 +28,29 @@
             throw ("'" + evt + "' event is not registered!!");
         }
         /* check for occurrence */
-        for (let i = 0; i < evtlist[evt].fn.length; i++) {
-            if (isFnSame(cb, evtlist[evt].fn[i])) {
+        for (let counter = 0; counter < evtlist[evt].fn.length; counter++) {
+            if (isFnSame(cb, evtlist[evt].fn[counter])) {
                 /* Already present in list */
-                return;
+                return this;
             }
         }
 
         cb.props = createCbProperty(option);
         evtlist[evt].fn.push(cb);
+
+        return this;
     }
 
     function unsubscribe(evt, cb) {
         if (evtlist[evt]) {
-            for (let i = 0; i < evtlist[evt].fn.length; i++) {
-                if (isFnSame(cb, evtlist[evt].fn[i])) {
-                    evtlist[evt].fn.splice(i, 1);
+            for (let counter = 0; counter < evtlist[evt].fn.length; counter++) {
+                if (isFnSame(cb, evtlist[evt].fn[counter])) {
+                    evtlist[evt].fn.splice(counter, 1);
                     break;
                 }
             }
         }
+        return this;
     }
 
     function publish(evt) {
@@ -73,13 +76,23 @@
         evtlist[eventName] = evtlist[eventName] || {};
         evtlist[eventName].fn = evtlist[eventName].fn || [];
         evtlist[eventName].data = data || evtlist[eventName].data || {};
+        
+        return this;
     }
 
     global.events = {
-        on: subscribe,
-        off: unsubscribe,
-        emit: publish,
-        registerEvent: register
+        on: function(eventName, callback, option) {
+            return subscribe.apply(this, arguments);
+        },
+        off: function(eventName, callback) {
+            return unsubscribe.apply(this, arguments);
+        },
+        emit: function(eventName) {
+            return publish.apply(this, arguments);
+        },
+        registerEvent: function(eventName, data) {
+            return register.apply(this, arguments);
+        },
     };
 })(window);
 

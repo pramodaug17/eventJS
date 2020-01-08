@@ -1,19 +1,35 @@
-const { task } = require("gulp");
-const log = require("fancy-log");
+const { task, src, dest, series } = require("gulp");
 const esm = require("./plugins/escompile");
+const rename = require("gulp-rename");
+const ugliyfy = require("gulp-uglify-es").default
 
-function distTask() {
-    log("Inside dist task");
-    
-    return esm();
+function buildStart() {
+    const ret = esm({
+        "entryFile": "src/event.js",
+        "outputFile": "tmp/compiled.js",
+        "format": "esm"
+    });
+    return ret;
 }
 
-distTask.displayName = "dist:all"
-distTask.description = "Distribution build task";
+function buildFinish(done){
+    src("tmp/compiled.js")
+    .pipe(ugliyfy())
+    .pipe(rename(function(path) {
+        path.basename = "event.min";
+        path.extname = ".js";
+    }))
+    .pipe(dest("./dist"));
+
+    done();
+}
+
+buildStart.displayName = "build:start";
+buildFinish.displayName = "build:finish";
 
 module.exports = (function(){
-    task(distTask);
+    task("build:dist", series(buildStart, buildFinish));
     return [
-        distTask.displayName
+        buildStart.displayName
     ];
 })();
