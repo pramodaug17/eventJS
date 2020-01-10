@@ -14,6 +14,11 @@ function buildStart() {
 
 function buildFinish(done){
     src("tmp/compiled.js")
+    .pipe(rename(function(path) {
+        path.basename = "event";
+        path.extname = ".js";
+    }))
+    .pipe(dest("./dist"))
     .pipe(ugliyfy())
     .pipe(rename(function(path) {
         path.basename = "event.min";

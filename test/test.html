@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>Test Page</title>
+        <script src="../dist/event.js"></script>
+    </head>
+    <body>
+        <script>
+            events.registerEvent("test1");
+            window.onload = function() {
+                function task(){
+                    console.log("Arguments: " + JSON.stringify(arguments));
+                    if(this !== window) {
+                        console.log("Name: " + this.name);
+                        events.off("test1", task);
+                    } else {
+                        console.log("Unsubscribing event");
+                        events.off("test1", task);
+                        publishEvent();
+                        return;
+                    }
+
+                    events.on("test1", task);
+                    console.log("Subscribing event. Id: " + task.id);
+                    publishEvent();
+                }
+
+                let eventCounter = 1
+                function publishEvent() {
+                    setTimeout(function() {
+                        console.log("Publishing event " + eventCounter++);
+                        events.emit("test1");
+                    }, 3000);
+                }
+
+                let bindobj = {
+                    name: "Pramod Jain"
+                }
+
+                events.on("test1", task, {
+                    "bindobj": bindobj
+                });
+                console.log("Subscribing event. Id: " + task.id);
+                publishEvent();
+            }
+        </script>
+    </body>
+</html>
