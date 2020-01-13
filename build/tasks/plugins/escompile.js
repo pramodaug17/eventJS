@@ -1,34 +1,34 @@
 const rollup = require("rollup");
 const fs = require("fs");
+const readable = require("stream").Readable;
+const path = require("path");
 
 async function process(opts) {
     let inputOptions = {
-        input: opts.entryFile
+        input: opts.inputOpts.entryFile
     };
-    let read = function(filename) {
-        fs.readFileSync(filename, "utf8");
-    }
-    let wrapper = read("./cover.js").split(/[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
-
 
     let outputOptions = {
-        intro: wrapper[0],
-        outro: wrapper[1]
+        intro: opts.outputOpts.introstring,
+        outro: opts.outputOpts.outrostring,
     };
-    
+
     const bundle = await rollup.rollup(inputOptions);
     const { output: [ { code } ] } = await bundle.generate(outputOptions);
     
-    return bundle.write({
-        file: opts.outputFile,
-        format: opts.format || 'esm'
+    let buff = Buffer.alloc(code.length, code);
+    const rStream = new readable();
+    rStream._read = ()=>{};
+    rStream.push(buff, 'uft8');
+    rStream.push(null);
+
+    return rStream.pipe(fs.createWriteStream(path.join(
+        "./" + opts.outputOpts.outputFile))
+    ).on("finish", ()=>{
+        opts.done();
     });
 }
 
 module.exports = function(opts) {
-    let outfile = opts.outputFile;
-
     return process(opts);
-
-    //return outfile;
 }

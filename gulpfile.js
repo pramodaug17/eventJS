@@ -15,8 +15,7 @@ function defaultTask(done) {
 
 let defaultTaskList = [
     "clean:dist",
-    "build:dist",
-    "clean:tmp"
+    "build:dist"
 ];
 
 exports.default = gulp.series(defaultTaskList);

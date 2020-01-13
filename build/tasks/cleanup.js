@@ -18,16 +18,8 @@ function doCleanup(options) {
     delete options.dest;
 
     return gulp.src(files)
-        .pipe(cleanup(options));
+    .pipe(cleanup(options));
 }
-
-function cleanTemp(options) {
-    return doCleanup({
-        "dest": ["tmp/**"]
-    })
-}
-cleanTemp.displayName = "clean:tmp";
-cleanTemp.description = "Task to clean all file(s) in tmp folder.";
 
 function cleanDist(options) {
     return doCleanup({
@@ -39,7 +31,7 @@ cleanDist.displayName = "clean:dist";
 cleanDist.description = "Task to clean all file(s) in dist folder.";
 
 function cleanAll(options) {
-    return cleanTemp() && cleanDist()
+    return cleanDist()
 }
 
 cleanAll.displayName = "clean:all";
@@ -47,13 +39,12 @@ cleanAll.description = "Task to clean all generated file(s).";
 
 tasks = tasks.concat([
     cleanAll.displayName,
-    cleanTemp.displayName
+    cleanDist.displayName
 ]);
 
 module.exports = (function(){
     gulp.task(cleanAll);
     gulp.task("clean", cleanAll);
-    gulp.task(cleanTemp);
     gulp.task(cleanDist);
     return tasks;
 })();

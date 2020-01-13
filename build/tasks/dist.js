@@ -1,24 +1,36 @@
 const { task, src, dest, series } = require("gulp");
 const esm = require("./plugins/escompile");
 const rename = require("gulp-rename");
-const ugliyfy = require("gulp-uglify-es").default
+const ugliyfy = require("gulp-uglify-es").default;
+const fs = require("fs");
+const path = require("path");
+const jsbeautify = require("gulp-beautify");
 
-function buildStart() {
-    const ret = esm({
-        "entryFile": "src/event.js",
-        "outputFile": "tmp/compiled.js",
-        "format": "esm"
+function buildStart(done) {
+    let read = function(filename) {
+        return fs.readFileSync(filename, "utf8");
+    }
+
+    let wrapper = read(path.resolve(__dirname, "../..", "src/cover.js")).split(/[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
+
+    return esm({
+        "inputOpts": {
+            "entryFile": "src/core.js"
+        },
+        "outputOpts": {
+            "outputFile": "dist/event.js",
+            "format": "esm",
+            "introstring": wrapper[0],
+            "outrostring": wrapper[1]
+        },
+        "done": done
     });
-    return ret;
 }
 
 function buildFinish(done){
-    src("tmp/compiled.js")
-    .pipe(rename(function(path) {
-        path.basename = "event";
-        path.extname = ".js";
-    }))
-    .pipe(dest("./dist"))
+    src("dist/event.js")
+    .pipe(jsbeautify())
+    .pipe(dest("dist"))
     .pipe(ugliyfy())
     .pipe(rename(function(path) {
         path.basename = "event.min";
@@ -35,6 +47,6 @@ buildFinish.displayName = "build:finish";
 module.exports = (function(){
     task("build:dist", series(buildStart, buildFinish));
     return [
-        buildStart.displayName
+        "biuld:dist"
     ];
 })();
