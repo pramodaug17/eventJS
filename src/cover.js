@@ -1,8 +1,4 @@
 (function(global) {
     // @CODE
-    // Insert Code here``
-
-
-    
-
+    // Insert Code here
 })(window);

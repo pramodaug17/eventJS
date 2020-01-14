@@ -11,7 +11,7 @@ function buildStart(done) {
         return fs.readFileSync(filename, "utf8");
     }
 
-    let wrapper = read(path.resolve(__dirname, "../..", "src/cover.js")).split(/[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
+    let wrapper = read(path.resolve(__dirname, "../..", "src/cover.js")).split(/[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ ); console.log(wrapper);
 
     return esm({
         "inputOpts": {
@@ -20,8 +20,8 @@ function buildStart(done) {
         "outputOpts": {
             "outputFile": "dist/event.js",
             "format": "esm",
-            "introstring": wrapper[0],
-            "outrostring": wrapper[1]
+            "introstring": wrapper[0].replace(/\n*$/, ""),
+            "outrostring": wrapper[1].replace(/^\n*/, "")
         },
         "done": done
     });
