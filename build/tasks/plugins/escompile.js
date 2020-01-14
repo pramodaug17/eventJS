@@ -16,7 +16,11 @@ async function process(opts) {
     const bundle = await rollup.rollup(inputOptions);
     const { output: [ { code } ] } = await bundle.generate(outputOptions);
     
-    let buff = Buffer.alloc(code.length, code);
+    let compiledCode = code.replace(/@VERSION/g, opts.version)
+                            .replace(/@DATE/g, 
+                                ( new Date() ).toISOString()
+                                .replace( /:\d+\.\d+Z$/, "Z" ));
+    let buff = Buffer.alloc(compiledCode.length, compiledCode);
     const rStream = new readable();
     rStream._read = ()=>{};
     rStream.push(buff, 'uft8');
