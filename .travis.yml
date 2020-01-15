@@ -10,5 +10,5 @@ os:
 before_script:
   - npm install -g gulp-cli
 script: 
-  - npm build
+  - npm run build
   - npm test
