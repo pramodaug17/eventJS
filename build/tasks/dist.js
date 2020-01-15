@@ -11,7 +11,8 @@ function buildStart(done) {
         return fs.readFileSync(filename, "utf8");
     }
 
-    let wrapper = read(path.resolve(__dirname, "../..", "src/cover.js")).split(/[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ ); // console.log(wrapper);
+    let wrapper = read(path.resolve("src/cover.js"))
+        .split(/[\x20\t]*\/\/\x20@CODE(?:\r\n?|\n)(?:[\x20\t]*\/\/[^\r\n]+(?:\r\n|\n)+)*/);
     let packagejson = JSON.parse(fs.readFileSync("./package.json"));
 
     return esm({
