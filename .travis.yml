@@ -13,12 +13,26 @@ before_script:
 jobs:
   include:
     - os: linux
+      node_js: 
+        - 8
+        - 10
+        - 12
       script:
         - npm run build
         - npm test
+
     - os: osx
+      node_js: 
+        - 8
+        - 10
+        - 12
       script:
         - npm run build
+
     - os: windows
+      node_js: 
+        - 8
+        - 10
+        - 12
       script:
         - npm run build
