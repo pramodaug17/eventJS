@@ -12,13 +12,13 @@ before_script:
 
 jobs:
   include:
-    - os: linux
+    - if: os = linux
       env: RUN_TEST=echo
 
-    - os: osx
+    - if: os = osx
       env: RUN_TEST=exit(0)
 
-    - os: windows
+    - if: os = windows
       env: RUN_TEST=exit(0)
 
 script:
