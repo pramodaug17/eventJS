@@ -11,10 +11,11 @@ before_script:
   - npm install -g gulp-cli
 
 jobs:
-  include:
-    - os: linux
+  exclude:
+    - os: osx
       node_js: 8
-      script:
-        - npm test
+      script: npm test
 
-script: npm run build
+script:
+  - npm run build
+  - npm test
