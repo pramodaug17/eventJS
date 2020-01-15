@@ -9,6 +9,16 @@ os:
   - windows
 before_script:
   - npm install -g gulp-cli
-script: 
-  - npm run build
-  - npm test
+
+jobs:
+  include:
+    - os: linux
+      script:
+        - npm run build
+        - npm test
+    - os: osx
+      script:
+        - npm run build
+    - os: windows
+      script:
+        - npm run build
