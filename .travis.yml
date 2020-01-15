@@ -1,29 +1,14 @@
 language: node_js
 node_js:
-  - 8
-  - 10
   - 12
 os:
   - linux
   - osx
-  - windows
+
 before_script:
   - npm install -g gulp-cli
 
-jobs:
-  include:
-    - if: os = linux
-      env: RUN_TEST=echo
-
-    - if: os = osx
-      env: RUN_TEST=exit(0)
-
-    - if: os = windows
-      env: RUN_TEST=exit(0)
-
-script:
-  - npm run build
-  - $(RUN_TEST) && npm test
+script: npm run build && npm test
 
 addons:
   firefox: "52.0"
