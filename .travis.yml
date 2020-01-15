@@ -5,17 +5,22 @@ node_js:
   - 12
 os:
   - linux
-#  - osx
-#  - windows
+  - osx
+  - windows
 before_script:
   - npm install -g gulp-cli
 
 jobs:
-  exclude:
+  include:
     - os: osx
-      node_js: 8
-      script: npm test
+      env: RUN_TEST=exit(0)
+
+    - os: windows
+      env: RUN_TEST=exit(0)
 
 script:
   - npm run build
-  - npm test
+  - $(RUN_TEST) && npm test
+
+addons:
+  firefox: "52.0"
