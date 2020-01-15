@@ -9,4 +9,6 @@ os:
   - windows
 before_script:
   - npm install -g gulp-cli
-script: gulp
+script: 
+  - npm build
+  - npm test
