@@ -12,6 +12,9 @@ before_script:
 
 jobs:
   include:
+    - os: linux
+      env: RUN_TEST=echo
+
     - os: osx
       env: RUN_TEST=exit(0)
 
