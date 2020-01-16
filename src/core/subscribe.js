@@ -12,7 +12,7 @@ export default function subscribe(evt, cb, option) {
     for (let counter = 0; counter < evtlist[evt].fn.length; counter++) {
         if (isFnSame(cb, evtlist[evt].fn[counter])) {
             /* Already present in list */
-            evtlist[evt].fn[counter] = createCbProperty(option); 
+            evtlist[evt].fn[counter].props = createCbProperty(option); 
             return this;
         }
     }
