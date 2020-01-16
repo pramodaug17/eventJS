@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 12
+os:
+  - linux
+  - osx
+  - windows
+
+before_script:
+  - npm install -g gulp-cli
+
+script: npm run build
