@@ -20,12 +20,12 @@ Below function to subscribe the event
 events.on(eventName, callbackfn, {bindobj: obj})
 ```
 where 
-- **eventName**: is name of event which will be subscribe. If there is no such event craeted the error will be thrown
+- **eventName**: is name of event which will be subscribe. If there is no such event created the error will be thrown
 - **callbackfn**: is callback function which will be called on event
-- **bindobj**: is the object to which callback function will be bind. if it passed the callback will be called in the obj's context
+- **bindobj**: is the object to which callback function will be bind. if it is passed then callback will be called in the obj's context
 
 ## Publishing Event
-Below function to subscribe the event
+Below function to publish the event
 ```javascript
 events.emit(eventName, data)
 ```
