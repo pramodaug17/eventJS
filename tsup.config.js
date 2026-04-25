@@ -2,9 +2,10 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/index.js"],      // Entry Point
-  formate: ["esm", "cjs"],       // Dual out formate
-  dts: true,                    // Geneate d.ts
+  format: ["esm", "cjs", "iife"],       // Dual out formate
+  dts: false,                    // Not Geneating d.ts as it is not reliable
   sourcemap: true,
+  globalName: "EventJs",
   clean: true,
   minify: true,
   target: "es2020",
