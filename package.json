@@ -21,9 +21,11 @@
   "scripts": {
     "test:vitest": "vitest run",
     "test": "pnpm run test:vitest",
+    "test:gh": "npm run test:vitest",
     "build:tsup": "tsup",
     "build:types": "tsc -p tsconfig.types.json",
     "build": "pnpm run build:tsup && pnpm run build:types",
+    "build:gh": "npm run build:tsup && npm run build:types",
     "clean": "shx rm -rf dist/*",
     "start:karma": "karma start --no-single-run --browsers ChromeHeadless,FirefoxHeadless karma.conf.js",
     "test:karma": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
