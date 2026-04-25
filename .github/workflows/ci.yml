@@ -27,4 +27,4 @@ jobs:
               run: npm run build:gh
 
             - name: Run Tests
-              run: npm test:gh
+              run: npm run test:gh
