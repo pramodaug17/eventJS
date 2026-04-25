@@ -2,10 +2,17 @@
   "name": "eventjs",
   "version": "1.0.3",
   "description": "eventJS enables script to emit event so that subscriber of that event will be notified.",
+  "type": "module",
   "main": "dist/event.js",
+  "module": "dist.index.js",
+  "types": "dist/types/index.d.ts",
+  "sideEffects": false,
+
   "scripts": {
-    "test": "karma start --single-run --browsers ChromeHeadless,FirefoxHeadless karma.conf.js",
-    "build": "gulp"
+    "test": "echo \"Testing pending\"",
+    "test:watch": "karma start --auto-watch --no-single-run --browsers ChromeHeadless,FirefoxHeadless karma.conf.js",
+    "build": "tsup",
+    "clean": "rm -rf dist/*"
   },
   "repository": {
     "type": "git",
@@ -20,21 +27,15 @@
     "url": "https://github.com/pramodaug17/eventJS/issues"
   },
   "homepage": "https://github.com/pramodaug17/eventJS#readme",
-  "dependencies": {},
   "devDependencies": {
+    "chai": "^4.2.0",
     "fancy-log": "^1.3.3",
-    "gulp": "^4.0.2",
-    "gulp-beautify": "^3.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-uglify-es": "^2.0.0",
-    "rollup": "^1.28.0",
     "karma": "^4.4.1",
-    "karma-mocha": "^1.3.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^1.3.0",
+    "karma-mocha": "^1.3.0",
     "mocha": "^7.0.0",
-    "chai": "^4.2.0"
+    "tsup": "^8.5.1"
   }
 }
