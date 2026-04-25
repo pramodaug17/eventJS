@@ -13,16 +13,17 @@ export class EventEmitter {
   /**
    * @constructor
    * @param {{strictMode?:boolean, 
-   * strategy: "macrotask" | "microtask" | "idle"
-   * batch:boolean 
-   * asyncMode: true }} [options] - Enables strict mode
+   * strategy?: "macrotask" | "microtask" | "idle"
+   * batch?:boolean 
+   * asyncMode?: true }} [options] - Enables strict mode
    * 
    */
   constructor (options = {}) {
     const { 
       strictMode = true, 
-      strategy = "marcotask",  
-      batch = false
+      strategy = "macrotask",  
+      batch = false,
+      asyncMode = true
     } = options;
     /** @type {EventRegistry} */
     this.eventRegistry = new EventRegistry();
@@ -33,8 +34,15 @@ export class EventEmitter {
     /** @type {boolean} */
     this.isStrictMode = strictMode;
     this.isBatched = batch;
+    this.asyncMode = asyncMode;
   }
 
+  /**
+   * 
+   * @param {string} eventName - Name of event 
+   * @param {any} payload - data from emitter to listener 
+   * @returns 
+   */
   #emiiter (eventName, payload) {
     /** @type {ListenerCollection|undefined} */
     const collection = this.eventRegistry.getCollection(eventName);
@@ -143,6 +151,11 @@ export class EventEmitter {
     }
 
     this.eventQueue.enqueue(eventName, payload, 
+      /**
+       * 
+       * @param {string} eventName - name of the event
+       * @param {any} data data to the listener
+       */
       (eventName, data) => {
         this.#emiiter(eventName, data);
       }

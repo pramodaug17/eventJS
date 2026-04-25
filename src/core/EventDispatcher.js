@@ -16,6 +16,11 @@ export class EventDispatcher {
     }));
   }
 
+  /**
+   * 
+   * @param {Listener[]} listenerList 
+   * @param {any} payload 
+   */
   async dispatchSequential(listenerList, payload) {
     for (const listener of listenerList) {
       listener.handlerFn(payload);
