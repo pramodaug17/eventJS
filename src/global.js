@@ -12,3 +12,4 @@ import { EventEmitter } from "./core/EventEmitter.js";
 
     
 globalThis.EventJs = new EventEmitter({strictMode:true});
+globalThis.events = globalThis.EventJs
