@@ -1,3 +1,12 @@
+
+/**
+ * @typedef {Object} QueueItem
+ * @property {string} eventName
+ * @property {any} payload
+ * @property {(eventName: string, payload: any) => Promise<void>|void} dispatcher
+ */
+
+
 /**
  * This represent Queue of Event which will be executed as per the strategy defined.
  */
@@ -8,8 +17,8 @@ export class EventQueue {
    */
   constructor (options = { strategy: "macrotask"}) {
     const { strategy } = options;
-    /** @type {Map<string, any>} */
-    this.queue = new Map();
+    /** @type {QueueItem[]}   */
+    this.queue = [];
     this.isScheduled = false;
     this.strategy = strategy;
   }
@@ -17,60 +26,70 @@ export class EventQueue {
   /**
    * @param {string} eventName - name of the event
    * @param {any} payload - data which will be sent to callback
-   * @param {function} dispatcher - function which will call all the callbacks
+   * @param {(eventName: string, payload: any) => Promise<void>|void} dispatcher - function which will call all the callbacks
    */
   enqueue (eventName, payload, dispatcher) {
-    this.queue.set(eventName, payload);
+    this.queue.push({eventName, payload, dispatcher});
 
     if (!this.isScheduled) {
       this.isScheduled = true;
-      this.scheduleFlush(dispatcher);
+      this.scheduleFlush();
     }
   }
 
   /**
-   * @param {function} dispatcher - function which handles calling of callback registered  
+   *  
    */
-  scheduleFlush (dispatcher) {
+  scheduleFlush () {
+    const runner = () => this.flush();
     switch (this.strategy) {
       case "microtask":
         queueMicrotask(() => {
-          this.flush(dispatcher);
+          runner();
         })
         break;
       case "idle":
         if (typeof requestIdleCallback !== "undefined") {
-          requestIdleCallback(() => {
-            this.flush(dispatcher);
-          });
+          requestIdleCallback(runner);
         } else {
-          setTimeout(() => {
-            this.flush(dispatcher);
-          }, 16);
+          setTimeout(runner, 16);
         }
         break;
       default:
-        setTimeout(() => {
-          this.flush(dispatcher);
-        },0);
+        setTimeout(runner,0);
         break;
     }
   }
 
   /**
-   * @param {function} dispatcher - function which hanldes calling of registered callbacks
+   * 
    */
-  async flush (dispatcher) {
-    const entries = Array.from(this.queue.entries());
-    this.queue.clear();
+  async flush () {
     this.isScheduled = false;
 
-    for (const [eventName, payload] of entries) {
-      await this.dispatchAsync(dispatcher, eventName, payload);
+    while (this.queue.length > 0) {
+      /** @type {QueueItem|undefined} */
+      const item = this.queue.shift();
 
-      // yeild control
-      await new Promise(r => setTimeout(r, 0));
+      if (!item) continue;
+
+      const { eventName, payload, dispatcher } = item;
+
+      try {
+        await this.dispatchAsync(dispatcher, eventName, payload);
+      } catch (error) {
+        console.error("[EventQueue Error]", error);
+      }
+
+      await this.yieldControl();
     }
+  }
+
+  /**
+   * 
+   */
+  async yieldControl () {
+    return new Promise(resolve => setTimeout(resolve, 0));
   }
 
   /**

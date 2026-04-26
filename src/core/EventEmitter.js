@@ -3,6 +3,7 @@ import { ListenerCollection } from "../collections/ListenerCollection.js";
 import { EventRegistry } from "./EventRegistry.js";
 import { EventDispatcher } from "./EventDispatcher.js"
 import { EventQueue } from "./EventQueue.js";
+import { PluginManager } from "./EventPlugin.js";
 
 
 /**
@@ -31,6 +32,8 @@ export class EventEmitter {
     this.eventDispatcher = new EventDispatcher();
     /** @type {EventQueue} */
     this.eventQueue = new EventQueue({strategy: strategy})
+    /** @type {PluginManager} */
+    this.pluginManager = new PluginManager();
     /** @type {boolean} */
     this.isStrictMode = strictMode;
     this.isBatched = batch;
@@ -41,26 +44,66 @@ export class EventEmitter {
    * 
    * @param {string} eventName - Name of event 
    * @param {any} payload - data from emitter to listener 
-   * @returns 
+   * @returns {Promise<void>}
    */
-  #emiiter (eventName, payload) {
+  #emitter (eventName, payload) {
     /** @type {ListenerCollection|undefined} */
     const collection = this.eventRegistry.getCollection(eventName);
     /** @type {Listener[]} */
     const listenerList = collection?.getAll() || [];
+    let retPromise;
 
     if (this.asyncMode) {
-      this.eventDispatcher.dispatchParallel(listenerList, payload);
+      retPromise = this.eventDispatcher.dispatchParallel(eventName, listenerList, payload, this, collection);
     } else {
-      this.eventDispatcher.dispatchSequential(listenerList, payload);
+      retPromise = this.eventDispatcher.dispatchSequential(eventName, listenerList, payload, this, collection);
     }
 
-    //// Remove once listener
-    listenerList
-      .filter(listener => listener.isOnce)
-      .forEach(listener => {
-        collection?.remove(listener.handlerFn)
-      });
+    return retPromise;
+  }
+
+  /**
+   * 
+   * @param {string} eventName Name of the event
+   * @param {any} payload Data sent by the event emitter
+   * @returns self object
+   */
+  async #emitInternal(eventName, payload) {
+    const eventContext = {
+      eventName,
+      payload,
+      emitter: this,
+      cancelled: false
+    }
+
+    try {
+      //// Before emitter
+      await this.pluginManager.runHook("beforeEmit", eventContext);
+
+      if (eventContext.cancelled) return this;
+
+      if (this.isBatched) {
+        this.#emitter(eventName, payload);
+        return this;
+      }
+
+      /**
+       * 
+       * @param {string} eventName - name of event
+       * @param {any} data - data from emitter
+       */
+      const dispatcher = async (eventName, data) => {
+        await this.#emitter(eventName, data);
+      }
+      this.eventQueue.enqueue(eventName, payload, dispatcher);
+
+      /// After Emit
+      await this.pluginManager.runHook("afterEmit", eventContext);
+
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String (err));
+      await this.pluginManager.runError(error, eventContext);
+    }
 
     return this;
   }
@@ -145,22 +188,17 @@ export class EventEmitter {
 
       return this      // Fall back for non-strict mode
     }
+    
+    this.#emitInternal(eventName, payload);
 
-    if (!this.isBatched) {
-      this.#emiiter(eventName, payload);
-    }
+    return this;
+  }
 
-    this.eventQueue.enqueue(eventName, payload, 
-      /**
-       * 
-       * @param {string} eventName - name of the event
-       * @param {any} data data to the listener
-       */
-      (eventName, data) => {
-        this.#emiiter(eventName, data);
-      }
-    );
-
+  /**
+   * @param {import("./EventPlugin.js").EventPlugin} plugin
+   */
+  use (plugin) {
+    this.pluginManager.use(plugin);
     return this;
   }
 }

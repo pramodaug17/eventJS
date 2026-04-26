@@ -22,12 +22,20 @@ jobs:
               run: npm install
 
             - name: Build Package
-              run: npm run build
+              run: npm run build:gh
 
             - name: Run Tests
-              run: npm test
+              run: npm test:gh
+
+            - name: Bump version
+              run: | 
+                npm version patch -m "release: %s"
+
+            - name: Push Tag
+              run: |
+                git push origin main --follow-tags
 
             - name: Publish to npm
-              run: npm publish --access public
+              run: npm publish --access public --no-git-shecks
               env:
                 NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
