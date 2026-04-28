@@ -1,43 +1,155 @@
-# eventJS
-[![](https://data.jsdelivr.com/v1/package/gh/pramodaug17/eventJS/badge)](https://www.jsdelivr.com/package/gh/pramodaug17/eventJS)
-[![Build Status](https://travis-ci.org/pramodaug17/eventJS.svg?branch=master)](https://travis-ci.org/pramodaug17/eventJS)
+# 📦 EventJS
 
-eventJS library creates a pub-sub design. It enable you to use pub-sub in simplest way.
+<p align="center">
+  <b>Modern, extensible, async-capable event system</b><br/>
+  <i>Built for performance, scalability, and flexibility</i>
+</p>
 
-## Create Event
-Below function to create the event
-```javascript
-events.registerEvent(eventName)
+<p align="center">
+  <img src="https://img.shields.io/npm/v/eventjs-core.svg" />
+  <img src="https://img.shields.io/npm/dm/eventjs-core.svg" />
+  <img src="https://img.shields.io/github/actions/workflow/status/pramodaug17/eventJS/ci.yml" />
+  <img src="https://img.shields.io/github/license/pramodaug17/eventJS" />
+  <img src="https://img.shields.io/bundlephobia/minzip/eventjs-core" />
+</p>
+
+---
+
+## 🚀 Why EventJS?
+
+Most event emitters are:
+
+- synchronous ❌  
+- non-extensible ❌  
+- lack scheduling ❌  
+
+**EventJS solves that** by combining:
+
+- ⚡ Async + non-blocking execution
+- 🧠 Smart scheduling
+- 🔌 Middleware-style plugin system
+- 📦 Batch processing
+- 🎯 Predictable architecture
+
+---
+
+## ✨ Features
+
+- Sync emit + async execution
+- Microtask / macrotask / idle scheduling
+- Plugin hooks (before/after emit & listener)
+- Parallel & sequential dispatch
+- Once listeners
+- Strict mode validation
+- Non-blocking queue
+- TypeScript support
+
+---
+
+## 📥 Installation
+
+```bash
+npm install eventjs-core
 ```
-where 
-- **eventName**: is name of event which will be created. Using the same name other compoents can subscribe to the event.
-- **data**: is the parameter or the data which will be provided to callbacks
 
+---
 
-## Subscribe Event
-Below function to subscribe the event
-```javascript
-events.on(eventName, callbackfn, {bindobj: obj})
+## 🧑‍💻 Quick Example
+
+```js
+import { EventEmitter } from "eventjs-core";
+
+const emitter = new EventEmitter();
+
+emitter.registerEvent("greet");
+
+emitter.on("greet", (name) => {
+  console.log("Hello", name);
+});
+
+emitter.emit("greet", "World");
 ```
-where 
-- **eventName**: is name of event which will be subscribe. If there is no such event created the error will be thrown
-- **callbackfn**: is callback function which will be called on event
-- **bindobj**: is the object to which callback function will be bind. if it is passed then callback will be called in the obj's context
 
-## Publishing Event
-Below function to publish the event
-```javascript
-events.emit(eventName, data)
-```
-where 
-- **eventName**: is name of event which will be publised.
-- **data**: is the parameters to subscribers callback. more parameter can be added after data.
+---
 
-## Unsubscribe Event
-Below function to subscribe the event
-```javascript
-events.off(eventName, callbackfn)
+## 🔌 Plugin Example
+
+```js
+emitter.use({
+  name: "logger",
+
+  beforeEmit(ctx) {
+    console.log("[Emit]", ctx.eventName);
+  },
+
+  afterListener(ctx) {
+    console.log("[Done]");
+  }
+});
 ```
-where 
-- **eventName**: is name of event which will be unsubscribe. If there is no such event craeted the error will be thrown
-- **callbackfn**: is callback function, which will be called on event, will get unsubscribed and will not be called on event.
+
+---
+
+## 🧠 Architecture
+
+```
+emit()
+ ├── validation (sync)
+ ├── beforeEmit (plugins)
+ ├── queue
+ ├── scheduler
+ ├── dispatcher
+ │    ├── beforeListener
+ │    ├── handler
+ │    ├── afterListener
+ └── afterEmit
+```
+
+---
+
+## ⚙️ Configuration
+
+```js
+new EventEmitter({
+  strictMode: true,
+  asyncMode: true,
+  strategy: "microtask",
+  batch: false
+});
+```
+
+---
+
+## 🌐 CDN
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/eventjs-core@latest/dist/events.js"></script>
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+pnpm test
+```
+
+---
+
+## 📦 Build
+
+```bash
+pnpm build
+```
+
+---
+
+## 🤝 Contributing
+
+PRs welcome. Please include tests.
+
+---
+
+## 📄 License
+
+MIT
