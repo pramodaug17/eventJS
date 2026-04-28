@@ -62,5 +62,49 @@ describe("Event Emitter - Core", () => {
     }).not.toThrow();    
   });
 
+  it("should not block execution", async () => {
+    const emitter = new EventEmitter();
+
+    emitter.registerEvent("test");
+
+    let executed = false;
+
+    emitter.on("test", async () => {
+      await new Promise(r => setTimeout(r,0));
+      executed = true;
+    });
+
+    emitter.emit("test");
+
+    expect(executed).toBe(false);
+
+    await new Promise(r => setTimeout(r,50));
+
+    expect(executed).toBe(true);
+  });
+
+  it("should cancel event in plugin", async () => {
+    const emitter = new EventEmitter();
+
+    emitter.registerEvent("test");
+
+    let called = false;
+
+    emitter.use({
+      beforeEmit(ctx) {
+        ctx.cancelled = true;
+      }
+    });
+
+    emitter.on("test", () => {
+      called = true;
+    });
+
+    emitter.emit("test");
+
+    await new Promise(r => setTimeout(r, 10));
+
+    expect(called).toBe(false);
+  });
 });
  

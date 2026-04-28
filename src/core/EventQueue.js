@@ -46,7 +46,7 @@ export class EventQueue {
       case "microtask":
         queueMicrotask(() => {
           runner();
-        })
+        });
         break;
       case "idle":
         if (typeof requestIdleCallback !== "undefined") {

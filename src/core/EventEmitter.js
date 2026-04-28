@@ -78,7 +78,7 @@ export class EventEmitter {
 
     try {
       //// Before emitter
-      await this.pluginManager.runHook("beforeEmit", eventContext);
+      void this.pluginManager.runHook("beforeEmit", eventContext);
 
       if (eventContext.cancelled) return this;
 
@@ -189,7 +189,7 @@ export class EventEmitter {
       return this      // Fall back for non-strict mode
     }
     
-    this.#emitInternal(eventName, payload);
+    void this.#emitInternal(eventName, payload);
 
     return this;
   }
