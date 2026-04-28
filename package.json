@@ -1,6 +1,6 @@
 {
-  "name": "eventjs",
-  "version": "2.0.1",
+  "name": "@dakinfosystems/events",
+  "version": "2.0.0",
   "description": "eventJS enables script to emit event so that subscriber of that event will be notified.",
   "type": "module",
   "main": "dist/events.js",
