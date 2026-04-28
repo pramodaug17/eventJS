@@ -49,7 +49,7 @@ Most event emitters are:
 ## 📥 Installation
 
 ```bash
-npm install eventjs-core
+npm install @dakinfosystems/events
 ```
 
 ---
@@ -57,7 +57,7 @@ npm install eventjs-core
 ## 🧑‍💻 Quick Example
 
 ```js
-import { EventEmitter } from "eventjs-core";
+import { EventEmitter } from "@dakinfosystems/events";
 
 const emitter = new EventEmitter();
 
@@ -123,7 +123,7 @@ new EventEmitter({
 ## 🌐 CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/eventjs-core@latest/dist/events.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@dakinfosystems/events@latest/dist/events.js"></script>
 ```
 
 ---
