@@ -45,7 +45,7 @@ jobs:
 
             - name: Commit and Push Tag
               run: |
-                git push origin main --follow-tags
+                git push origin master --follow-tags
 
             - name: Check version if already published
               id: version_check
