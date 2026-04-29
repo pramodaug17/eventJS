@@ -16,17 +16,23 @@ jobs:
               uses: actions/setup-node@v4
               with:
                 node-version: 24
-                registry-url: https://registry,npmjs.org/
+                registry-url: https://registry.npmjs.org/
+                # cache: pnpm
                 # cache: "npm"          # enables only if lock file exists
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                version: 10
             
             - name: Install dependencies
-              run: npm install
+              run: pnpm install --frozen-lockfile
 
             - name: Build Package
-              run: npm run build:gh
+              run: pnpm run build
 
             - name: Run Tests
-              run: npm run test:gh
+              run: pnpm run test
 
             - name: Git configuration
               run: |
